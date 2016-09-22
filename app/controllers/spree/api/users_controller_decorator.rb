@@ -1,7 +1,7 @@
 module Spree
   module Api
-
-    UsersController.class_eval do
+    module V1
+      UsersController.class_eval do
 
       before_action :authenticate_user, :except => [:sign_up, :sign_in]
 
@@ -35,6 +35,7 @@ module Spree
         params.require(:user).permit(:email, :password, :password_confirmation)
       end
 
+      end
     end
   end
 end
