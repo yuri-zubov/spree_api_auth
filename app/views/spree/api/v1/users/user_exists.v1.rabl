@@ -1,2 +1,3 @@
 object false
-node(:error) { "A user with the given email address already exists." }
+node(:status) { "failed" }
+node(:message) { "failed" }
