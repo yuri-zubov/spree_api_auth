@@ -32,6 +32,11 @@ module Spree
 
       def login_check
         @user = Spree::User.find_by_email(params[:user][:email])
+
+        unless params[:user].has_key?(:email)
+          render inline: "", :status => 400 and return
+        end
+
         if @user.present?
           render "spree/api/v1/users/email_busy", :status => 400 and return
         else
