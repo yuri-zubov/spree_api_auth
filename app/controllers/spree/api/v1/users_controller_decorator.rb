@@ -1,59 +1,66 @@
 module Spree
   module Api
     module V1
+
       UsersController.class_eval do
+        before_action :authenticate_user, :except => [:sign_up, :sign_in, :email_availability_check]
 
-      before_action :authenticate_user, :except => [:sign_up, :sign_in, :login_check]
+        def update_preferences
+          @user = Spree::User.where(spree_api_key: request.headers['X-Spree-Token']).first
 
-      def sign_up
-
-        @user = Spree::User.find_by_email(params[:user][:email])
-
-        if @user.present?
-          render "spree/api/v1/users/user_exists", :status => 400 and return
+          if @user.update_attribute(:preferences, { shirt_size: 'L' })
+            respond_with(@user, :status => 200)
+          else
+            invalid_resource!(user)
+          end
         end
 
-        @user = Spree::User.new(user_params)
-        if !@user.save
-          unauthorized
-          return
-        end
-        @user.generate_spree_api_key!
-      end
+        def sign_up
+          @user = Spree::User.find_by_email(params[:user][:email])
 
-      def sign_in
-        @user = Spree::User.find_by_email(params[:user][:email])
-        if !@user.present? || !@user.valid_password?(params[:user][:password])
-          unauthorized
-          return
-        end
-        @user.generate_spree_api_key! if @user.spree_api_key.blank?
-      end
+          if @user.present?
+            render "spree/api/v1/users/user_exists", :status => 400 and return
+          end
 
-      def login_check
-        @user = Spree::User.find_by_email(params[:user][:email])
-
-        unless params[:user].has_key?(:email)
-          render inline: "", :status => 400 and return
+          @user = Spree::User.new(user_params)
+          if !@user.save
+            unauthorized
+            return
+          end
+          @user.generate_spree_api_key!
         end
 
-        if @user.present?
-          render "spree/api/v1/users/email_busy", :status => 400 and return
-        else
-          render "spree/api/v1/users/email_free", :status => 200 and return
+        def sign_in
+          @user = Spree::User.find_by_email(params[:user][:email])
+          if !@user.present? || !@user.valid_password?(params[:user][:password])
+            unauthorized
+            return
+          end
+          @user.generate_spree_api_key! if @user.spree_api_key.blank?
         end
-      end
 
-      def get_user
-        @user = Spree::User.where(spree_api_key: request.headers['X-Spree-Token'])
-      end
+        def email_availability_check
+          @user = Spree::User.find_by_email(params[:user][:email])
 
-      def user_params
-        params.require(:user).permit(:email, :password, :password_confirmation)
-      end
+          unless params[:user].has_key?(:email)
+            render inline: "", :status => 400 and return
+          end
 
+          if @user.present?
+            render "spree/api/v1/users/email_unavailable", :status => 400 and return
+          else
+            render "spree/api/v1/users/email_available", :status => 200 and return
+          end
+        end
+
+        def get_user
+          @user = Spree::User.where(spree_api_key: request.headers['X-Spree-Token'])
+        end
+
+        def user_params
+          params.require(:user).permit(:email, :password, :password_confirmation, :preferences)
+        end
       end
     end
   end
 end
-
