@@ -7,9 +7,19 @@ module Spree
 
         def update_preferences
           @user = Spree::User.where(spree_api_key: request.headers['X-Spree-Token']).first
+          byebug
+          if @user.update_attribute(:preferences, params[:user][:preferences])
+            respond_with(@user, :status => 200, :default_template => :show)
+          else
+            invalid_resource!(user)
+          end
+        end
 
-          if @user.update_attribute(:preferences, { shirt_size: 'L' })
-            respond_with(@user, :status => 200)
+        def update
+          authorize! :update, user
+
+          if user.update_attributes(user_params)
+            respond_with(user, :status => 200, :default_template => :show)
           else
             invalid_resource!(user)
           end
