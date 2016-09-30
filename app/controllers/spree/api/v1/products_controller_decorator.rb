@@ -6,10 +6,12 @@ module Spree
           def index
             @products = Spree::Product.all
 
+            # Filter products by price if params exist
             if params.has_key?(:price_floor) and params.has_key?(:price_ceiling)
               @products = @products.price_between(params[:price_floor], params[:price_ceiling])
             end
 
+            # Only get products from taxon (category) IDs in params, if they exists
             taxon_ids = params[:taxon_ids].split(',')
             @products = @products.in_taxons(taxon_ids) if params.has_key?(:in_taxons)
 
