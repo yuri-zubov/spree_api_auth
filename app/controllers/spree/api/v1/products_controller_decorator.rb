@@ -15,6 +15,7 @@ module Spree
             if params.has_key?(:in_taxons)
               taxon_ids = params[:taxon_ids].split(',')
               @products = @products.in_taxons(taxon_ids)
+            end
 
             @products = @products.distinct.page(params[:page]).per(params[:per_page])
             expires_in 15.minutes, :public => true
