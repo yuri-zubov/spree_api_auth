@@ -8,6 +8,8 @@ Spree::Core::Engine.add_routes do
         post :email_availability_check
         get :get_user
       end
+
+      post 'taxons/:id/follow', to: 'taxons#follow'
     end
   end
 end

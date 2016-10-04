@@ -7,7 +7,7 @@ module Spree
 
         def update_preferences
           @user = Spree::User.where(spree_api_key: request.headers['X-Spree-Token']).first
-          byebug
+
           if @user.update_attribute(:preferences, params[:user][:preferences])
             respond_with(@user, :status => 200, :default_template => :show)
           else
