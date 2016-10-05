@@ -10,6 +10,7 @@ Spree::Core::Engine.add_routes do
       end
 
       post 'taxons/:id/follow', to: 'taxons#follow'
+      post 'taxons/:id/unfollow', to: 'taxons#unfollow'
     end
   end
 end
