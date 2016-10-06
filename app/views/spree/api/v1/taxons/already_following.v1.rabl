@@ -1,2 +1,2 @@
 object false
-node(:message) { "already following" }
+node(:error) { "already following" }

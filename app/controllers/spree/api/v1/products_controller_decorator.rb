@@ -3,6 +3,7 @@ module Spree
     module V1
 
       ProductsController.class_eval do
+
         def index
           @products = Spree::Product.all
 
@@ -27,11 +28,43 @@ module Spree
             @products = @products.with_option_value(params[:option_type], params[:option_value])
           end
 
+          # Pagination
           @products = @products.distinct.page(params[:page]).per(params[:per_page])
+
+          # Set cache invalidation
           expires_in 15.minutes, :public => true
           headers['Surrogate-Control'] = "max-age=#{15.minutes}"
+
+          # Respond with the products
           respond_with(@products)
         end
+
+        # Allows users to add to their list of favorite products
+        def add_favorite
+          product = Spree::Product.find(params[:id])
+
+          # Handle uniqueness exception if association already exists.
+          begin
+            product.users_who_favorited << current_api_user
+            render "spree/api/v1/shared/success", status: 200
+          rescue ActiveRecord::RecordNotUnique
+            render "spree/api/v1/taxons/already_favorited", status: 400
+          end
+        end
+
+
+        # Allows users to remove from their list of favorite products.
+        def remove_favorite
+          product = Spree::Product.find(params[:id])
+
+          if product.favorited_by?(current_api_user)
+            product.users_who_favorited.delete(current_api_user)
+            render "spree/api/v1/shared/success", status: 200
+          else
+            render "spree/api/v1/products/not_favorited", status: 400
+          end
+        end
+
       end
 
     end

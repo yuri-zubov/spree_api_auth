@@ -67,6 +67,15 @@ module Spree
           @user = Spree::User.where(spree_api_key: request.headers['X-Spree-Token'])
         end
 
+        def favorite_products
+          @products = current_api_user.favorite_products.all
+          @products = @products.distinct.page(params[:page]).per(params[:per_page])
+          expires_in 15.minutes, :public => true
+          headers['Surrogate-Control'] = "max-age=#{15.minutes}"
+
+          render "spree/api/v1/products/index", :status => 200 and return
+        end
+
         def user_params
           params.require(:user).permit(:email, :password, :password_confirmation, :preferences)
         end
