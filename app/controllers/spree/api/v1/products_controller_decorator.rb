@@ -16,7 +16,7 @@ module Spree
           # Only get products from taxon (category) IDs
           # in params, if they exists
           if params.has_key?(:in_taxons)
-            taxon_ids = params[:in_taxons].split(',')
+            taxon_ids = params[:in_taxons].split(',').map(&:to_i)
             @products = @products.in_taxons(taxon_ids)
           end
 
