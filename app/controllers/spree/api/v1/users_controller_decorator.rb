@@ -67,6 +67,13 @@ module Spree
           @user = Spree::User.where(spree_api_key: request.headers['X-Spree-Token'])
         end
 
+        def followed_brands
+          # Get the brands (taxons) that a user followers
+          @taxons = current_api_user.followed_brands
+          @taxons.page(params[:page]).per(params[:per_page])
+          render "spree/api/v1/users/followed_brands", :status => 200 and return
+        end
+
         def favorite_products
           @products = current_api_user.favorite_products.all
           @products = @products.distinct.page(params[:page]).per(params[:per_page])

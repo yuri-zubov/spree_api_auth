@@ -8,6 +8,7 @@ Spree::Core::Engine.add_routes do
         post :email_availability_check
         get :get_user
         get :favorite_products
+        get :followed_brands
       end
 
       # Endpoints for following and unfollowing brands.
