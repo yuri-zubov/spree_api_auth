@@ -14,17 +14,7 @@ module Spree
             invalid_resource!(user)
           end
         end
-
-        def update
-          authorize! :update, user
-
-          if user.update_attributes(user_params)
-            respond_with(user, :status => 200, :default_template => :show)
-          else
-            invalid_resource!(user)
-          end
-        end
-
+        
         def sign_up
           @user = Spree::User.find_by_email(params[:user][:email])
 
@@ -84,7 +74,8 @@ module Spree
         end
 
         def user_params
-          params.require(:user).permit(:email, :password, :password_confirmation, :preferences)
+          params.require(:user).permit(:email, :password, :password_confirmation,
+                                       :preferences, :full_name, :gender, :birthdate)
         end
       end
     end
