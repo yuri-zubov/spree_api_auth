@@ -7,6 +7,11 @@ module Spree
         def index
           @products = Spree::Product.all
 
+          # Filter products by name or description
+          if params.has_key?(:q)
+            @products = @products.in_name_or_description(params[:q])
+          end
+
           # Filter products  by  price. Both  parameters
           #  ('price_floor', 'price_ceiling are required
           #  for the filter to trigger
