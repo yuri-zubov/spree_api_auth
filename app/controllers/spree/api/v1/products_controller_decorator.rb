@@ -57,7 +57,6 @@ module Spree
           end
         end
 
-
         # Allows users to remove from their list of favorite products.
         def remove_favorite
           product = Spree::Product.find(params[:id])
@@ -70,8 +69,22 @@ module Spree
           end
         end
 
-      end
+        def trending
+          @products = Spree::Product.most_hit(1.month.ago, 20).all
 
+          expires_in 15.minutes, :public => true
+          headers['Surrogate-Control'] = "max-age=#{15.minutes}"
+
+          render "spree/api/v1/products/trending", :status => 200 and return
+        end
+
+        def punch
+          product = Spree::Product.find(params[:id])
+          product.punch(request)
+          render "spree/api/v1/shared/success", status: 200
+        end
+
+      end
     end
   end
 end

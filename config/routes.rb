@@ -11,13 +11,19 @@ Spree::Core::Engine.add_routes do
         get :followed_brands
       end
 
-      # Endpoints for following and unfollowing brands.
+      # Following and unfollowing brands.
       post 'taxons/:id/follow', to: 'taxons#follow'
       post 'taxons/:id/unfollow', to: 'taxons#unfollow'
 
-      # Endpoints for adding and removing favorite products.
+      # Adding and removing favorite products.
       post 'products/:id/add_favorite', to: 'products#add_favorite'
       post 'products/:id/remove_favorite', to: 'products#remove_favorite'
+
+      # Trending products, includes:
+      #  - Hitting / pinging a product
+      #  - Returning trending products
+      get 'products/:id/punch', to: 'products#punch'
+      get 'products/trending', to: 'products#trending'
     end
   end
 end
