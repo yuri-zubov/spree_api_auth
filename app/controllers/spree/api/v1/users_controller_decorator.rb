@@ -14,7 +14,7 @@ module Spree
             invalid_resource!(user)
           end
         end
-        
+
         def sign_up
           @user = Spree::User.find_by_email(params[:user][:email])
 

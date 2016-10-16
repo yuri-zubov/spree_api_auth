@@ -1,5 +1,9 @@
 object @user
-attributes :id, :spree_api_key, :email
+attributes *user_attributes, :spree_api_key,
+                             :preferences,
+                             :full_name,
+                             :birthdate,
+                             :gender
 
 child(:bill_address => :bill_address) do
   extends "spree/api/v1/addresses/show"
