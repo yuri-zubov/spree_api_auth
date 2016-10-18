@@ -1,7 +1,7 @@
 object @product
 cache [I18n.locale, @current_user_roles.include?('admin'), current_currency, root_object]
 
-attributes *product_attributes, :sale_price
+attributes *product_attributes, :sale_price, :favorite_count
 
 node(:display_price) { |p| p.display_price.to_s }
 node(:has_variants) { |p| p.has_variants? }
