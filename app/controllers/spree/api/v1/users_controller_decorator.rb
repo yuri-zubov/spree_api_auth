@@ -73,6 +73,20 @@ module Spree
           render "spree/api/v1/products/index", :status => 200 and return
         end
 
+        def followed_brands_products
+          @products = Spree::Product.all_from_brands_followed_by(current_api_user)
+
+          if @products.any?
+            @products = @products.distinct.page(params[:page]).per(params[:per_page])
+            expires_in 15.minutes, :public => true
+            headers['Surrogate-Control'] = "max-age=#{15.minutes}"
+
+            render "spree/api/v1/products/index", :status => 200 and return
+          else
+            render "spree/api/v1/products/not_following_any_brands", :status => 400 and return
+          end
+        end
+
         def user_params
           params.require(:user).permit(:email, :password, :password_confirmation,
                                        :preferences, :full_name, :gender, :birthdate)

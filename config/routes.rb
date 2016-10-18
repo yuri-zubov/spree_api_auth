@@ -9,6 +9,7 @@ Spree::Core::Engine.add_routes do
         get :get_user
         get :favorite_products
         get :followed_brands
+        get :followed_brands_products
       end
 
       # Following and unfollowing brands.
