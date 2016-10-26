@@ -45,6 +45,15 @@ module Spree
           respond_with(@products)
         end
 
+        def show
+          @current_api_user = current_api_user
+          @product = find_product(params[:id])
+          expires_in 15.minutes, :public => true
+          headers['Surrogate-Control'] = "max-age=#{15.minutes}"
+          headers['Surrogate-Key'] = "product_id=1"
+          respond_with(@product)
+        end
+
         # Allows users to add to their list of favorite products
         def add_favorite
           product = Spree::Product.find(params[:id])
