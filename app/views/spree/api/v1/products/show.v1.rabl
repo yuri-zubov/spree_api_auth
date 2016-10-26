@@ -7,6 +7,7 @@ node(:display_price) { |p| p.display_price.to_s }
 node(:has_variants) { |p| p.has_variants? }
 node(:taxon_ids) { |p| p.taxon_ids }
 node(:affiliate_url) { |p| p.master.affiliate_url }
+node(:favorited_by_current_user) { |p| p.favorited_by?(@current_api_user) }
 
 child :master => :master do
   extends "spree/api/v1/variants/small"

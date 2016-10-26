@@ -35,6 +35,7 @@ module Spree
 
           # Pagination
           @products = @products.distinct.page(params[:page]).per(params[:per_page])
+          @current_api_user = current_api_user
 
           # Set cache invalidation
           expires_in 15.minutes, :public => true
