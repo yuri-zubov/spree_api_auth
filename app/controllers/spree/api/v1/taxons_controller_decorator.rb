@@ -26,6 +26,23 @@ module Spree
           taxon.users.delete(current_api_user)
           render "spree/api/v1/shared/success", status: 200
         end
+
+
+        def index
+          if taxonomy
+            @taxons = taxonomy.root.children
+          else
+            if params[:ids]
+              @taxons = Spree::Taxon.includes(:children).accessible_by(current_ability, :read).where(id: params[:ids].split(','))
+            else
+              @taxons = Spree::Taxon.includes(:children).accessible_by(current_ability, :read).order(:taxonomy_id, :lft).ransack(params[:q]).result
+            end
+          end
+
+          @current_api_user = current_api_user
+          @taxons = @taxons.page(params[:page]).per(params[:per_page])
+          respond_with(@taxons)
+        end
       end
 
     end
