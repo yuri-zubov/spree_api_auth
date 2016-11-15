@@ -7,10 +7,20 @@ module Spree
         def index
           @products = Spree::Product.all
 
+          # Filter products by gender
+          if params.has_key?(:gender)
+            if params[:gender] == "male"
+              @products = @products.in_taxons(Spree::Taxon.where(name: "Male"))
+            else
+              @products = @products.in_taxons(Spree::Taxon.where(name: "Female"))
+            end
+          end
+
           # Filter products by name or description
           if params.has_key?(:q)
             @products = @products.in_name_or_description(params[:q])
           end
+
 
           # Filter products  by  price. Both  parameters
           #  ('price_floor', 'price_ceiling are required
