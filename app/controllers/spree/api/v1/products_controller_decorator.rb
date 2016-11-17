@@ -10,9 +10,11 @@ module Spree
           # Filter products by gender
           if params.has_key?(:gender)
             if params[:gender] == "male"
-              @products = @products.in_taxons(Spree::Taxon.where(name: "Male"))
+              # 7 is the Male parent taxon
+              @products = @products.in_taxons(7)
             else
-              @products = @products.in_taxons(Spree::Taxon.where(name: "Female"))
+              # 8 is the Female parent taxon
+              @products = @products.in_taxons(8)
             end
           end
 
