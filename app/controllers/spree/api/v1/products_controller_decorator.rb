@@ -65,11 +65,11 @@ module Spree
             if params.has_key?(:option_type) and params.has_key?(:option_value)
               @products = @products.with_option_value(params[:option_type], params[:option_value])
             end
-
-            # Pagination
-            @products = @products.distinct.page(params[:page]).per(params[:per_page])
-            @current_api_user = current_api_user
           end
+        
+          # Pagination
+          @products = @products.distinct.page(params[:page]).per(params[:per_page])
+          @current_api_user = current_api_user
 
           # Set cache invalidation
           expires_in 15.minutes, :public => true
