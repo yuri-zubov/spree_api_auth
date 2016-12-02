@@ -15,8 +15,7 @@ module Spree
             @products = Spree::Product.all
           else
             if (selected_sizes = current_api_user.preferences["selected_sizes"]).present?
-              @products = []
-
+              @products = Spree::Product.none
               selected_sizes.keys.each do |option_type|
                 selected_sizes[option_type].each do |option_value|
                   @products.concat(Spree::Product.with_option_value(option_type, option_value))
@@ -66,7 +65,7 @@ module Spree
               @products = @products.with_option_value(params[:option_type], params[:option_value])
             end
           end
-        
+
           # Pagination
           @products = @products.distinct.page(params[:page]).per(params[:per_page])
           @current_api_user = current_api_user
