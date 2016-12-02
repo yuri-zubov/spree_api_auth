@@ -5,7 +5,27 @@ module Spree
       ProductsController.class_eval do
 
         def index
-          @products = Spree::Product.all
+          # this is the start of the collection of products to send the user
+          # first we prioritize the search :q param against all products
+          # then if no search query
+          # we build a collection based on the users set prefernces
+          # if user has no preferences set we grab all products
+
+          if params.has_key?(:q)
+            @products = Spree::Product.all
+          else
+            if (selected_sizes = current_api_user.preferences["selected_sizes"]).present?
+              @products = []
+
+              selected_sizes.keys.each do |option_type|
+                selected_sizes[option_type].each do |option_value|
+                  @products.concat(Spree::Product.with_option_value(option_type, option_value))
+                end
+              end
+            else
+              @products = Spree::Product.all
+            end
+          end
 
           # Filter products by gender
           if params.has_key?(:gender)
