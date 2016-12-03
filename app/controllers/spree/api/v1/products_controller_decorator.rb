@@ -15,14 +15,15 @@ module Spree
             @products = Spree::Product.all
           else
             if (selected_sizes = current_api_user.preferences["selected_sizes"]).present?
-              @products = Spree::Product.none
+              product_ids = []
               selected_sizes.keys.each do |taxon|
                 selected_sizes[taxon].keys.each do |option_type|
                   selected_sizes[taxon][option_type].each do |option_value|
-                    @products.concat(Spree::Product.with_option_value(option_type, option_value).in_taxons(taxon.to_i))
+                    product_ids.concat(Spree::Product.with_option_value(option_type, option_value).in_taxons(taxon.to_i).pluck(:id))
                   end
                 end
               end
+              @products = Spree::Product.where(id: product_ids.uniq)
             else
               @products = Spree::Product.all
             end
