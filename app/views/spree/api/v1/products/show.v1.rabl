@@ -4,6 +4,7 @@ cache [I18n.locale, @current_user_roles.include?('admin'), current_currency, roo
 attributes *product_attributes, :sale_price, :favorite_count
 
 node(:display_price) { |p| p.display_price.to_s }
+node(:display_sale_price) { |p| Spree::Money.new(p.sale_price).to_s }
 node(:has_variants) { |p| p.has_variants? }
 node(:taxon_ids) { |p| p.taxon_ids }
 node(:affiliate_url) { |p| p.master.affiliate_url }
