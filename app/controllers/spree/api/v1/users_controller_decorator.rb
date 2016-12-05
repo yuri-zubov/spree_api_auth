@@ -89,7 +89,7 @@ module Spree
 
         def user_params
           params.require(:user).permit(:email, :password, :password_confirmation,
-                                       :preferences, :full_name, :gender, :birthdate)
+                                       :preferences, :full_name, :gender, :birthdate, :notify_in)
         end
       end
     end
