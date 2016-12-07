@@ -24,8 +24,9 @@ module Spree
 
           @user = Spree::User.new(user_params)
           if !@user.save
-            unauthorized
-            return
+            #unauthorized
+            #return
+            render "spree/api/v1/users/unable_to_sign_up", :status => 400 and return
           end
           @user.generate_spree_api_key!
         end
@@ -33,8 +34,9 @@ module Spree
         def sign_in
           @user = Spree::User.find_by_email(params[:user][:email])
           if !@user.present? || !@user.valid_password?(params[:user][:password])
-            unauthorized
-            return
+            #unauthorized
+            #return
+            render "spree/api/v1/users/unable_to_sign_in", :status => 400 and return
           end
           @user.generate_spree_api_key! if @user.spree_api_key.blank?
         end
